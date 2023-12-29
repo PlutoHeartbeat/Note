@@ -148,7 +148,7 @@ git branch
 
 2. 查看所有分支： 若要查看所有本地分支（包括远程跟踪分支），可以使用以下命令：
 
-```
+```bash
 git branch -a
 ```
 
@@ -194,4 +194,59 @@ git config --global user.name "Your New Name"
 git config user.name "Your New Name"
 ```
 
-​	
+# Git 中的 HTTP 和 SSH 配置与切换方法
+
+Git 支持多种数据传输协议，最常用的是 HTTP(S) 和 SSH。以下是这两种方法的配置步骤，以及它们之间的区别和切换方法。
+
+## HTTP 和 HTTPS
+
+### 配置方法
+
+要通过HTTP(S)与GitHub交互，通常不需要做特别的配置。当你克隆仓库或推送代码时，Git 会提示你输入GitHub的用户名和密码（或个人访问令牌）。
+
+### 切换到 HTTP(S)
+
+如果你的仓库当前使用SSH，并且你想切换到HTTP(S)，可以修改远程仓库的URL：
+
+```bash
+git remote set-url origin https://github.com/username/repository.git
+```
+
+## SSH
+
+### 配置方法
+
+1. **生成SSH密钥**： 在终端中运行 `ssh-keygen` 并按指示操作。你可以为密钥设置密码。
+2. **将SSH公钥添加到GitHub**： 将生成的公钥（通常是 `~/.ssh/id_rsa.pub`）复制并粘贴到GitHub账户的SSH密钥部分。
+
+### 切换到 SSH
+
+如果你的仓库当前使用HTTP(S)，并且你想切换到SSH，需要执行以下命令：
+
+```bash
+git remote set-url origin git@github.com:username/repository.git
+```
+
+同样，把 `username` 和 `repository` 替换为你的GitHub用户名和仓库名。
+
+## 解释与区别
+
+SSH（Secure Shell）和HTTPS（HyperText Transfer Protocol Secure）是两种常用的网络协议，用于安全地传输数据。在Git中，它们都用于安全地与远程仓库通信，如GitHub，但是它们在认证、配置和使用方面有一些关键的区别：
+
+### SSH
+
+- **认证方式**：SSH使用密钥对进行认证。用户需要生成一对密钥（公钥和私钥），并将公钥添加到GitHub账户。私钥保留在用户的计算机上。
+- **连接设置**：SSH需要在用户的计算机上设置SSH密钥。这需要额外的初始配置，但一旦完成，用户就不必每次推送或拉取时都输入用户名和密码。
+- **端口**：SSH默认使用端口22。
+- **适用场景**：SSH特别适合开发者和那些需要频繁推送代码的用户，因为它可以避免频繁地输入凭据。
+- **速度**：SSH可能在某些操作上比HTTPS快一些，尽管这个差异通常很小，对大多数用户来说几乎不可察觉。
+- **防火墙和网络限制**：在某些网络环境中，SSH可能会被阻止，特别是在严格限制出站端口的企业网络环境中。
+
+### HTTP(S)
+
+- **认证方式**：HTTPS使用用户名和密码进行认证。对于GitHub，还可以使用个人访问令牌作为密码进行认证。
+- **连接设置**：HTTPS不需要在客户端进行特殊的设置，只需使用GitHub账户的用户名和密码（或个人访问令牌）即可。
+- **端口**：HTTPS使用端口443，这是网页浏览中使用的标准端口。
+- **适用场景**：HTTPS是一种简单、便捷的方法，特别是对于那些偶尔需要与远程仓库交互的用户。
+- **速度**：对于大多数操作，HTTPS的速度与SSH相当，用户不太可能注意到明显的差异。
+- **防火墙和网络限制**：HTTPS很少受到防火墙的限制，因为它使用的是标准的互联网浏览端口。
